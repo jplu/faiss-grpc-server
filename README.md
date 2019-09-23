@@ -58,5 +58,5 @@ faiss_server:
     -file_path (index file name) type: string default: ""
     -host (host of faiss server) type: string default: "0.0.0.0"
     -port (port of faiss server) type: string default: "8080"
-    -top_k (default number of neighbor) type: uint64 default: 5
+    -top_k (default number of neighbor) type: uint64 default: 10
 ```

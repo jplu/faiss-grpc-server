@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package faiss;
+
+import "google/protobuf/empty.proto";
+
+message HeartbeatResponse {
+    string message = 1;
+};
+
+message Vector {
+    repeated float float_val = 5; 
+}
+
+message SearchRequest {
+    Vector vector = 1;
+    uint64 top_k = 2;
+};
+
+message Neighbor {
+    uint64 id = 1;
+    float score = 2;
+}
+
+message SearchResponse {
+    repeated Neighbor neighbors = 2;
+};
+
+message SearchByIdRequest {
+    uint64 id = 1;
+    uint64 top_k = 2;
+};
+
+message SearchByIdResponse {
+    uint64 request_id = 1;
+    repeated Neighbor neighbors = 2;
+};
+
+service FaissService {
+    rpc Heartbeat (google.protobuf.Empty) returns (HeartbeatResponse);
+    rpc Search(SearchRequest) returns (SearchResponse);
+    rpc SearchById(SearchByIdRequest) returns (SearchByIdResponse);
+};

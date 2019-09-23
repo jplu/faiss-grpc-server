@@ -1,0 +1,11 @@
+# Build
+build/
+
+# Python
+python/
+
+# Go
+go/
+
+# VS Code
+.vscode/

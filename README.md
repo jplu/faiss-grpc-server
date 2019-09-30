@@ -59,4 +59,5 @@ faiss_server:
     -host (host of faiss server) type: string default: "0.0.0.0"
     -port (port of faiss server) type: string default: "8080"
     -top_k (default number of neighbor) type: uint64 default: 10
+    -on_cpu (run on CPU or not) type: boolean default: false
 ```

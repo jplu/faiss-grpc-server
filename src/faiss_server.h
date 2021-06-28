@@ -4,6 +4,7 @@
 #include "faiss/gpu/StandardGpuResources.h"
 #include "faiss/gpu/GpuIndexFlat.h"
 #include "faiss/gpu/GpuAutoTune.h"
+#include "faiss/gpu/GpuCloner.h"
 #include "faiss/gpu/GpuClonerOptions.h"
 #include "faiss/IndexFlat.h"
 #include "faiss/index_io.h"

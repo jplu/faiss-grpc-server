@@ -49,7 +49,7 @@ class FaissServer final : public FaissService::Service {
   const uint& default_top_k_;
   int ngpus = 0;
   std::shared_ptr<faiss::Index> faissIndex = nullptr;
-  std::vector<faiss::gpu::GpuResources *> res;
+  std::vector<faiss::gpu::GpuResourcesProvider *> res;
   std::vector<int> devs;
   faiss::gpu::GpuMultipleClonerOptions *options = new faiss::gpu::GpuMultipleClonerOptions();
 };

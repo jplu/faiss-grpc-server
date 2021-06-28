@@ -4,6 +4,7 @@
 #include "faiss/gpu/StandardGpuResources.h"
 #include "faiss/gpu/GpuIndexFlat.h"
 #include "faiss/gpu/GpuAutoTune.h"
+#include "faiss/gpu/GpuClonerOptions.h"
 #include "faiss/IndexFlat.h"
 #include "faiss/index_io.h"
 #include "faiss/impl/AuxIndexStructures.h"
@@ -22,7 +23,6 @@ using faiss::SearchResponse;
 using spdlog::logger;
 using namespace faiss;
 using namespace faiss::gpu;
-using faiss::gpu::GpuMultipleClonerOptions;
 
 class FaissServer final : public FaissService::Service {
  public:
@@ -51,7 +51,7 @@ class FaissServer final : public FaissService::Service {
   std::shared_ptr<faiss::Index> faissIndex = nullptr;
   std::vector<faiss::gpu::GpuResources *> res;
   std::vector<int> devs;
-  GpuMultipleClonerOptions *options = new GpuMultipleClonerOptions();
+  faiss::gpu::GpuMultipleClonerOptions *options = new faiss::gpu::GpuMultipleClonerOptions();
 };
 
 #endif  // FAISS_SERVER_H_

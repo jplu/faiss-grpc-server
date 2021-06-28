@@ -6,7 +6,7 @@
 #include "faiss/gpu/GpuAutoTune.h"
 #include "faiss/IndexFlat.h"
 #include "faiss/index_io.h"
-#include "faiss/AuxIndexStructures.h"
+#include "faiss/impl/AuxIndexStructures.h"
 #include <grpc++/grpc++.h>
 #include <spdlog/spdlog.h>
 

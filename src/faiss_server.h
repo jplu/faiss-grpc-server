@@ -22,6 +22,7 @@ using faiss::SearchResponse;
 using spdlog::logger;
 using namespace faiss;
 using namespace faiss::gpu;
+using faiss::gpu::GpuMultipleClonerOptions;
 
 class FaissServer final : public FaissService::Service {
  public:
@@ -50,7 +51,7 @@ class FaissServer final : public FaissService::Service {
   std::shared_ptr<faiss::Index> faissIndex = nullptr;
   std::vector<faiss::gpu::GpuResources *> res;
   std::vector<int> devs;
-  faiss::gpu::GpuMultipleClonerOptions *options = new faiss::gpu::GpuMultipleClonerOptions();
+  GpuMultipleClonerOptions *options = new GpuMultipleClonerOptions();
 };
 
 #endif  // FAISS_SERVER_H_

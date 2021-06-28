@@ -1,4 +1,4 @@
-#include <faiss/FaissException.h>
+#include <faiss/impl/FaissException.h>
 
 #include "faiss_server.h"
 

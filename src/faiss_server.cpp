@@ -12,7 +12,7 @@ FaissServer::FaissServer(const std::shared_ptr<logger>& logger,
     
     is_trained = faissIndex->is_trained;
     ntotal = faissIndex->ntotal;
-    dim = 512;
+    dim = faissIndex->d;
 
     if (!onCPU) {
       ngpus = faiss::gpu::getNumDevices();

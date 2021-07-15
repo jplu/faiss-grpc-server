@@ -4,10 +4,6 @@ package faiss;
 
 import "google/protobuf/empty.proto";
 
-message HeartbeatResponse {
-    string message = 1;
-};
-
 message Vector {
     repeated float float_val = 5; 
 }
@@ -37,7 +33,6 @@ message SearchByIdResponse {
 };
 
 service FaissService {
-    rpc Heartbeat (google.protobuf.Empty) returns (HeartbeatResponse);
     rpc Search(SearchRequest) returns (SearchResponse);
     rpc SearchById(SearchByIdRequest) returns (SearchByIdResponse);
 };

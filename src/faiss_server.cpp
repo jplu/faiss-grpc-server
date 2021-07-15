@@ -37,11 +37,3 @@ FaissServer::FaissServer(const std::shared_ptr<logger>& logger,
     std::exit(1);
   }
 }
-
-grpc::Status FaissServer::Heartbeat(
-    grpc::ServerContext* context, const ::google::protobuf::Empty* request,
-    HeartbeatResponse* response) {
-  logger_->info("Heartbeat");
-  response->set_message("OK");
-  return grpc::Status::OK;
-}

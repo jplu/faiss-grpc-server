@@ -33,10 +33,6 @@ class FaissServer final : public FaissService::Service {
   FaissServer(const std::shared_ptr<logger>& logger,
               const uint& default_top_k, const char* file_path, bool onCPU);
 
-  grpc::Status Heartbeat(grpc::ServerContext* context,
-                         const ::google::protobuf::Empty* request,
-                         HeartbeatResponse* response) override;
-
   grpc::Status Search(grpc::ServerContext* context,
                       const SearchRequest* request,
                       SearchResponse* response) override;

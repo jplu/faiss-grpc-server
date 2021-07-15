@@ -53,9 +53,21 @@ COPY --from=builder /faiss-grpc-server/build/bin/faiss_server /home/
 
 COPY --from=builder /usr/lib/x86_64-linux-gnu/libfaiss.so /usr/lib/x86_64-linux-gnu/
 
+COPY --from=builder /usr/lib/libgrpc* /usr/lib/
+
+COPY --from=builder /usr/lib/libgpr* /usr/lib/
+
+COPY --from=builder /usr/lib/libupb* /usr/lib/
+
+COPY --from=builder /usr/lib/libaddress_sorting* /usr/lib/
+
+COPY --from=builder /usr/lib/libabsl* /usr/lib/
+
+COPY --from=builder /usr/lib/x86_64-linux-gnu/libproto* /usr/lib/x86_64-linux-gnu/
+
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections \
     && apt update \
-    && apt install intel-mkl libgflags2.2 libspdlog1 libprotobuf17 libgrpc++1 wget -y -q \
+    && apt install intel-mkl libgflags2.2 libspdlog1 wget -y -q \
     && GRPC_HEALTH_PROBE_VERSION=v0.4.4 \
     && wget -qO/bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 \
     && chmod +x /bin/grpc_health_probe

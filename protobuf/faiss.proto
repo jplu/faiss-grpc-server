@@ -2,8 +2,6 @@ syntax = "proto3";
 
 package faiss;
 
-import "google/protobuf/empty.proto";
-
 message Vector {
     repeated float float_val = 5; 
 }

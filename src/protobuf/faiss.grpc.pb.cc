@@ -11,14 +11,17 @@
 #include <grpcpp/impl/codegen/channel_interface.h>
 #include <grpcpp/impl/codegen/client_unary_call.h>
 #include <grpcpp/impl/codegen/client_callback.h>
-#include <grpcpp/impl/codegen/method_handler_impl.h>
+#include <grpcpp/impl/codegen/message_allocator.h>
+#include <grpcpp/impl/codegen/method_handler.h>
 #include <grpcpp/impl/codegen/rpc_service_method.h>
+#include <grpcpp/impl/codegen/server_callback.h>
+#include <grpcpp/impl/codegen/server_callback_handlers.h>
+#include <grpcpp/impl/codegen/server_context.h>
 #include <grpcpp/impl/codegen/service_type.h>
 #include <grpcpp/impl/codegen/sync_stream.h>
 namespace faiss {
 
 static const char* FaissService_method_names[] = {
-  "/faiss.FaissService/Heartbeat",
   "/faiss.FaissService/Search",
   "/faiss.FaissService/SearchById",
 };
@@ -30,9 +33,8 @@ std::unique_ptr< FaissService::Stub> FaissService::NewStub(const std::shared_ptr
 }
 
 FaissService::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel)
-  : channel_(channel), rpcmethod_Heartbeat_(FaissService_method_names[0], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_Search_(FaissService_method_names[1], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_SearchById_(FaissService_method_names[2], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  : channel_(channel), rpcmethod_Search_(FaissService_method_names[0], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_SearchById_(FaissService_method_names[1], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   {}
 
 ::grpc::Status FaissService::Stub::Search(::grpc::ClientContext* context, const ::faiss::SearchRequest& request, ::faiss::SearchResponse* response) {
@@ -40,15 +42,27 @@ FaissService::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& chann
 }
 
 void FaissService::Stub::experimental_async::Search(::grpc::ClientContext* context, const ::faiss::SearchRequest* request, ::faiss::SearchResponse* response, std::function<void(::grpc::Status)> f) {
-  return ::grpc::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_Search_, context, request, response, std::move(f));
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_Search_, context, request, response, std::move(f));
+}
+
+void FaissService::Stub::experimental_async::Search(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::faiss::SearchResponse* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_Search_, context, request, response, std::move(f));
+}
+
+void FaissService::Stub::experimental_async::Search(::grpc::ClientContext* context, const ::faiss::SearchRequest* request, ::faiss::SearchResponse* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_Search_, context, request, response, reactor);
+}
+
+void FaissService::Stub::experimental_async::Search(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::faiss::SearchResponse* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_Search_, context, request, response, reactor);
 }
 
 ::grpc::ClientAsyncResponseReader< ::faiss::SearchResponse>* FaissService::Stub::AsyncSearchRaw(::grpc::ClientContext* context, const ::faiss::SearchRequest& request, ::grpc::CompletionQueue* cq) {
-  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::faiss::SearchResponse>::Create(channel_.get(), cq, rpcmethod_Search_, context, request, true);
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::faiss::SearchResponse>::Create(channel_.get(), cq, rpcmethod_Search_, context, request, true);
 }
 
 ::grpc::ClientAsyncResponseReader< ::faiss::SearchResponse>* FaissService::Stub::PrepareAsyncSearchRaw(::grpc::ClientContext* context, const ::faiss::SearchRequest& request, ::grpc::CompletionQueue* cq) {
-  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::faiss::SearchResponse>::Create(channel_.get(), cq, rpcmethod_Search_, context, request, false);
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::faiss::SearchResponse>::Create(channel_.get(), cq, rpcmethod_Search_, context, request, false);
 }
 
 ::grpc::Status FaissService::Stub::SearchById(::grpc::ClientContext* context, const ::faiss::SearchByIdRequest& request, ::faiss::SearchByIdResponse* response) {
@@ -56,33 +70,50 @@ void FaissService::Stub::experimental_async::Search(::grpc::ClientContext* conte
 }
 
 void FaissService::Stub::experimental_async::SearchById(::grpc::ClientContext* context, const ::faiss::SearchByIdRequest* request, ::faiss::SearchByIdResponse* response, std::function<void(::grpc::Status)> f) {
-  return ::grpc::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_SearchById_, context, request, response, std::move(f));
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_SearchById_, context, request, response, std::move(f));
+}
+
+void FaissService::Stub::experimental_async::SearchById(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::faiss::SearchByIdResponse* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_SearchById_, context, request, response, std::move(f));
+}
+
+void FaissService::Stub::experimental_async::SearchById(::grpc::ClientContext* context, const ::faiss::SearchByIdRequest* request, ::faiss::SearchByIdResponse* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_SearchById_, context, request, response, reactor);
+}
+
+void FaissService::Stub::experimental_async::SearchById(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::faiss::SearchByIdResponse* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_SearchById_, context, request, response, reactor);
 }
 
 ::grpc::ClientAsyncResponseReader< ::faiss::SearchByIdResponse>* FaissService::Stub::AsyncSearchByIdRaw(::grpc::ClientContext* context, const ::faiss::SearchByIdRequest& request, ::grpc::CompletionQueue* cq) {
-  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::faiss::SearchByIdResponse>::Create(channel_.get(), cq, rpcmethod_SearchById_, context, request, true);
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::faiss::SearchByIdResponse>::Create(channel_.get(), cq, rpcmethod_SearchById_, context, request, true);
 }
 
 ::grpc::ClientAsyncResponseReader< ::faiss::SearchByIdResponse>* FaissService::Stub::PrepareAsyncSearchByIdRaw(::grpc::ClientContext* context, const ::faiss::SearchByIdRequest& request, ::grpc::CompletionQueue* cq) {
-  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::faiss::SearchByIdResponse>::Create(channel_.get(), cq, rpcmethod_SearchById_, context, request, false);
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::faiss::SearchByIdResponse>::Create(channel_.get(), cq, rpcmethod_SearchById_, context, request, false);
 }
 
 FaissService::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       FaissService_method_names[0],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< FaissService::Service, ::google::protobuf::Empty, ::faiss::HeartbeatResponse>(
-          std::mem_fn(&FaissService::Service::Heartbeat), this)));
+      new ::grpc::internal::RpcMethodHandler< FaissService::Service, ::faiss::SearchRequest, ::faiss::SearchResponse>(
+          [](FaissService::Service* service,
+             ::grpc_impl::ServerContext* ctx,
+             const ::faiss::SearchRequest* req,
+             ::faiss::SearchResponse* resp) {
+               return service->Search(ctx, req, resp);
+             }, this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       FaissService_method_names[1],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< FaissService::Service, ::faiss::SearchRequest, ::faiss::SearchResponse>(
-          std::mem_fn(&FaissService::Service::Search), this)));
-  AddMethod(new ::grpc::internal::RpcServiceMethod(
-      FaissService_method_names[2],
-      ::grpc::internal::RpcMethod::NORMAL_RPC,
       new ::grpc::internal::RpcMethodHandler< FaissService::Service, ::faiss::SearchByIdRequest, ::faiss::SearchByIdResponse>(
-          std::mem_fn(&FaissService::Service::SearchById), this)));
+          [](FaissService::Service* service,
+             ::grpc_impl::ServerContext* ctx,
+             const ::faiss::SearchByIdRequest* req,
+             ::faiss::SearchByIdResponse* resp) {
+               return service->SearchById(ctx, req, resp);
+             }, this)));
 }
 
 FaissService::Service::~Service() {
@@ -104,4 +135,3 @@ FaissService::Service::~Service() {
 
 
 }  // namespace faiss
-

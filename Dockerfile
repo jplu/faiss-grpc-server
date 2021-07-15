@@ -1,5 +1,7 @@
 FROM nvidia/cuda:11.3.1-devel-ubuntu20.04 AS builder
 
+SHELL ["/bin/bash", "-c"]
+
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
 RUN apt update \
@@ -12,22 +14,34 @@ RUN apt update \
 
 ENV PATH="/usr/bin/cmake/bin:${PATH}"
 
-RUN apt install intel-mkl-full protobuf-compiler-grpc libssl-dev libgrpc++-dev protobuf-compiler libspdlog-dev libgrpc-dev libgflags-dev libgtest-dev libc-ares-dev libprotobuf-dev git -y -q
+RUN apt install git -y \
+    && git clone --recurse-submodules -b v1.30.2 https://github.com/grpc/grpc \
+    && cd grpc \
+    && mkdir -p cmake/build \
+    && pushd cmake/build \
+    && cmake -DgRPC_INSTALL=ON -DBUILD_SHARED_LIBS=ON -DgRPC_BUILD_TESTS=OFF -DCMAKE_INSTALL_PREFIX=/usr ../.. \
+    && make -j \
+    && make install \
+    && popd \
+    && mkdir -p third_party/abseil-cpp/cmake/build \
+    && pushd third_party/abseil-cpp/cmake/build \
+    && cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_POSITION_INDEPENDENT_CODE=TRUE ../.. \
+    && make -j \
+    && make install
 
-RUN git clone https://github.com/facebookresearch/faiss \
+RUN apt install intel-mkl-full libssl-dev libspdlog-dev libgflags-dev libgtest-dev libc-ares-dev -y -q
+
+RUN git clone --recurse-submodules -b v1.7.1 https://github.com/facebookresearch/faiss \
     && cd /faiss \
     && cmake -DCMAKE_INSTALL_PREFIX=/usr -DFAISS_ENABLE_PYTHON=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release -DFAISS_OPT_LEVEL=avx2 -B build . \
     && make -C build -j faiss \
-    && make -C build install \
-    && rm -rf /faiss
+    && make -C build install
 
 ENV CPATH="/usr/local/cuda-11.3/targets/x86_64-linux/include:${CPATH}"
 
 RUN git clone https://github.com/jplu/faiss-grpc-server.git \
     && cd /faiss-grpc-server \
     && make cppclient \
-    && mkdir /usr/lib/x86_64-linux-gnu/cmake/grpc \
-    && cp grpc-config.cmake /usr/lib/x86_64-linux-gnu/cmake/grpc/ \
     && mkdir build \
     && cd build \
     && cmake .. \
@@ -42,7 +56,7 @@ COPY --from=builder /usr/lib/x86_64-linux-gnu/libfaiss.so /usr/lib/x86_64-linux-
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections \
     && apt update \
     && apt install intel-mkl libgflags2.2 libspdlog1 libprotobuf17 libgrpc++1 wget -y -q \
-    && GRPC_HEALTH_PROBE_VERSION=v0.3.1 \
+    && GRPC_HEALTH_PROBE_VERSION=v0.4.4 \
     && wget -qO/bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 \
     && chmod +x /bin/grpc_health_probe
 

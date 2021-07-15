@@ -35,22 +35,6 @@ FaissService::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& chann
   , rpcmethod_SearchById_(FaissService_method_names[2], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   {}
 
-::grpc::Status FaissService::Stub::Heartbeat(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::faiss::HeartbeatResponse* response) {
-  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_Heartbeat_, context, request, response);
-}
-
-void FaissService::Stub::experimental_async::Heartbeat(::grpc::ClientContext* context, const ::google::protobuf::Empty* request, ::faiss::HeartbeatResponse* response, std::function<void(::grpc::Status)> f) {
-  return ::grpc::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_Heartbeat_, context, request, response, std::move(f));
-}
-
-::grpc::ClientAsyncResponseReader< ::faiss::HeartbeatResponse>* FaissService::Stub::AsyncHeartbeatRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
-  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::faiss::HeartbeatResponse>::Create(channel_.get(), cq, rpcmethod_Heartbeat_, context, request, true);
-}
-
-::grpc::ClientAsyncResponseReader< ::faiss::HeartbeatResponse>* FaissService::Stub::PrepareAsyncHeartbeatRaw(::grpc::ClientContext* context, const ::google::protobuf::Empty& request, ::grpc::CompletionQueue* cq) {
-  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::faiss::HeartbeatResponse>::Create(channel_.get(), cq, rpcmethod_Heartbeat_, context, request, false);
-}
-
 ::grpc::Status FaissService::Stub::Search(::grpc::ClientContext* context, const ::faiss::SearchRequest& request, ::faiss::SearchResponse* response) {
   return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_Search_, context, request, response);
 }
@@ -102,13 +86,6 @@ FaissService::Service::Service() {
 }
 
 FaissService::Service::~Service() {
-}
-
-::grpc::Status FaissService::Service::Heartbeat(::grpc::ServerContext* context, const ::google::protobuf::Empty* request, ::faiss::HeartbeatResponse* response) {
-  (void) context;
-  (void) request;
-  (void) response;
-  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
 ::grpc::Status FaissService::Service::Search(::grpc::ServerContext* context, const ::faiss::SearchRequest* request, ::faiss::SearchResponse* response) {

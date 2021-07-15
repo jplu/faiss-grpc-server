@@ -15,7 +15,6 @@
 #include "protobuf/faiss.grpc.pb.h"
 
 using faiss::FaissService;
-using faiss::HeartbeatResponse;
 using faiss::SearchByIdRequest;
 using faiss::SearchByIdResponse;
 using faiss::SearchRequest;

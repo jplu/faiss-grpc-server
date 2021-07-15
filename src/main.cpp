@@ -1,6 +1,5 @@
 #include <gflags/gflags.h>
 #include <grpc++/grpc++.h>
-//#include <spdlog/spdlog.h>
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 #include <iostream>
@@ -15,6 +14,8 @@ DEFINE_uint64(top_k, 10, "default number of neighbor");
 DEFINE_bool(on_cpu, false, "run on CPU or not");
 
 int main(int argc, char* argv[]) {
+  const grpc::string kHealthyService("healthy_service");
+  grpc::EnableDefaultHealthCheckService(true);
   gflags::ParseCommandLineFlags(&argc, &argv, true);
   std::string address = FLAGS_host + ":" + FLAGS_port;
   auto logger = spdlog::stdout_color_mt("console");
@@ -23,6 +24,8 @@ int main(int argc, char* argv[]) {
   builder.AddListeningPort(address, grpc::InsecureServerCredentials());
   builder.RegisterService(&fsrv);
   std::unique_ptr<grpc::Server> server(builder.BuildAndStart());
+  grpc::HealthCheckServiceInterface* service = server->GetHealthCheckService();
+  service->SetServingStatus(kHealthyService, true);
   logger->info("Server run on {0}", address);
   server->Wait();
   return 0;

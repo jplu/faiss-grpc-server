@@ -7,6 +7,8 @@
 #include "faiss/gpu/GpuCloner.h"
 #include "faiss/gpu/GpuClonerOptions.h"
 #include "faiss/IndexFlat.h"
+#include "faiss/IVFlib.h"
+#include "faiss/IndexIVF.h"
 #include "faiss/index_io.h"
 #include "faiss/impl/AuxIndexStructures.h"
 #include <grpc++/grpc++.h>

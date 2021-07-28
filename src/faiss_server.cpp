@@ -13,6 +13,9 @@ FaissServer::FaissServer(const std::shared_ptr<logger>& logger,
     is_trained = faissIndex->is_trained;
     ntotal = faissIndex->ntotal;
     dim = faissIndex->d;
+    
+    faiss::IndexIVF* ivf = faiss::ivflib::extract_index_ivf(faissIndex.get());
+    ivf->nprobe = 2048;
 
     if (!onCPU) {
       ngpus = faiss::gpu::getNumDevices();
@@ -22,11 +25,12 @@ FaissServer::FaissServer(const std::shared_ptr<logger>& logger,
       }
       options->indicesOptions = faiss::gpu::INDICES_64_BIT;
       options->useFloat16CoarseQuantizer = false;
-      options->useFloat16 = false;
+      options->useFloat16 = true;
       options->usePrecomputed = false;
       options->reserveVecs = 0;
       options->storeTransposed = false;
       options->verbose = true;
+      options->shard = true;
       faissIndex.reset(faiss::gpu::index_cpu_to_gpu_multiple(res, devs, faissIndex.get(), options));
     }
   } catch (faiss::FaissException& fe) {

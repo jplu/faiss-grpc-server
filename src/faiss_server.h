@@ -32,7 +32,7 @@ class FaissServer final : public FaissService::Service {
   long ntotal;
   bool is_trained;
   FaissServer(const std::shared_ptr<logger>& logger,
-              const uint& default_top_k, const char* file_path, bool onCPU);
+              const uint& default_top_k, const char* file_path, bool onCPU, const uint& nprobe);
 
   grpc::Status Search(grpc::ServerContext* context,
                       const SearchRequest* request,
@@ -45,6 +45,7 @@ class FaissServer final : public FaissService::Service {
  private:
   const std::shared_ptr<logger>& logger_;
   const uint& default_top_k_;
+  const uint& nprobe_;
   int ngpus = 0;
   std::shared_ptr<faiss::Index> faissIndex = nullptr;
   std::vector<faiss::gpu::GpuResourcesProvider *> res;

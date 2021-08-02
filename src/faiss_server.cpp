@@ -5,17 +5,18 @@
 FaissServer::FaissServer(const std::shared_ptr<logger>& logger,
                                    const uint& default_top_k,
                                    const char* file_path,
-                                   bool onCPU)
-    : logger_(logger), default_top_k_(default_top_k) {
+                                   bool onCPU,
+                                   const uint& nprobe)
+    : logger_(logger), default_top_k_(default_top_k), nprobe_(nprobe) {
   try {
     faissIndex.reset(faiss::read_index(file_path));
-    
+
     is_trained = faissIndex->is_trained;
     ntotal = faissIndex->ntotal;
     dim = faissIndex->d;
-    
+
     faiss::IndexIVF* ivf = faiss::ivflib::extract_index_ivf(faissIndex.get());
-    ivf->nprobe = 2048;
+    ivf->nprobe = nprobe_;
 
     if (!onCPU) {
       ngpus = faiss::gpu::getNumDevices();

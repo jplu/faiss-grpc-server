@@ -21,6 +21,7 @@ make cppclient
 Then use CMake:
 
 ```
+sudo mkdir -p /usr/lib/x86_64-linux-gnu/cmake/grpc
 sudo cp grpc-config.cmake /usr/lib/x86_64-linux-gnu/cmake/grpc
 mkdir build; cd build
 cmake ..

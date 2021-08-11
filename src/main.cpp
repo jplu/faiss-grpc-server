@@ -3,6 +3,7 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 #include <iostream>
+#include "mkl/mkl_service.h"
 
 #include "protobuf/faiss.grpc.pb.h"
 #include "faiss_server.h"
@@ -15,6 +16,8 @@ DEFINE_bool(on_cpu, false, "run on CPU or not");
 DEFINE_uint64(nprobe, 256, "nprobe > 0 && nprobe <= nlist");
 
 int main(int argc, char* argv[]) {
+  mkl_set_dynamic(0);
+  mkl_set_num_threads(mkl_get_max_threads());
   const grpc::string kHealthyService("healthy_service");
   grpc::EnableDefaultHealthCheckService(true);
   gflags::ParseCommandLineFlags(&argc, &argv, true);

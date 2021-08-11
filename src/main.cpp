@@ -4,6 +4,7 @@
 #include "spdlog/sinks/stdout_color_sinks.h"
 #include <iostream>
 #include "mkl/mkl_service.h"
+#include <omp.h>
 
 #include "protobuf/faiss.grpc.pb.h"
 #include "faiss_server.h"
@@ -17,13 +18,14 @@ DEFINE_uint64(nprobe, 256, "nprobe > 0 && nprobe <= nlist");
 
 int main(int argc, char* argv[]) {
   mkl_set_dynamic(0);
-  mkl_set_num_threads(mkl_get_max_threads());
+  mkl_set_num_threads(omp_get_max_threads());
+  omp_set_num_threads(omp_get_max_threads());
   const grpc::string kHealthyService("healthy_service");
   grpc::EnableDefaultHealthCheckService(true);
   gflags::ParseCommandLineFlags(&argc, &argv, true);
   std::string address = FLAGS_host + ":" + FLAGS_port;
   auto logger = spdlog::stdout_color_mt("console");
-  logger->info("Set MKL on {0} threads", mkl_get_max_threads());
+  logger->info("Set MKL to {0} threads", omp_get_max_threads());
   FaissServer fsrv(logger, FLAGS_top_k, FLAGS_file_path.c_str(), FLAGS_on_cpu, FLAGS_nprobe);
   grpc::ServerBuilder builder;
   builder.AddListeningPort(address, grpc::InsecureServerCredentials());

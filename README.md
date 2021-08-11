@@ -5,8 +5,8 @@ gRPC server over a FAISS index.
 ## Requirements
 To install the required tools on Ubuntu, run the following command line:
 ```
-apt update
-apt install -y protobuf-compiler-grpc libssl-dev cmake libgrpc++-dev protobuf-compiler libspdlog-dev libgrpc-dev libgflags-dev libgtest-dev libc-ares-dev libprotobuf-dev
+sudo apt update
+sudo install intel-mkl-full protobuf-compiler-grpc libssl-dev cmake libgrpc++-dev protobuf-compiler libspdlog-dev libgrpc-dev libgflags-dev libgtest-dev libc-ares-dev libprotobuf-dev
 ```
 
 ## Installation from source

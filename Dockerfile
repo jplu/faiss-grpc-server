@@ -67,7 +67,7 @@ COPY --from=builder /usr/lib/x86_64-linux-gnu/libproto* /usr/lib/x86_64-linux-gn
 
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections \
     && apt update \
-    && apt install intel-mkl libgflags2.2 libspdlog1 wget -y -q \
+    && apt install htop intel-mkl libgflags2.2 libspdlog1 wget -y -q \
     && GRPC_HEALTH_PROBE_VERSION=v0.4.4 \
     && wget -qO/bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 \
     && chmod +x /bin/grpc_health_probe

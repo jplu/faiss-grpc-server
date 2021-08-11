@@ -13,6 +13,6 @@ add_executable(faiss_server
     protobuf/faiss.pb.cc)
 
 target_link_libraries(faiss_server
-    faiss mkl_intel_lp64 gflags spdlog::spdlog
+    faiss gomp mkl_intel_lp64 gflags spdlog::spdlog
     protobuf::libprotobuf
     grpc++_unsecure)

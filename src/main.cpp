@@ -23,6 +23,7 @@ int main(int argc, char* argv[]) {
   gflags::ParseCommandLineFlags(&argc, &argv, true);
   std::string address = FLAGS_host + ":" + FLAGS_port;
   auto logger = spdlog::stdout_color_mt("console");
+  logger->info("Set MKL on {0} threads", mkl_get_max_threads());
   FaissServer fsrv(logger, FLAGS_top_k, FLAGS_file_path.c_str(), FLAGS_on_cpu, FLAGS_nprobe);
   grpc::ServerBuilder builder;
   builder.AddListeningPort(address, grpc::InsecureServerCredentials());

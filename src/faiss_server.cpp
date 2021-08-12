@@ -17,6 +17,7 @@ FaissServer::FaissServer(const std::shared_ptr<logger>& logger,
 
     faiss::IndexIVF* ivf = faiss::ivflib::extract_index_ivf(faissIndex.get());
     ivf->nprobe = nprobe_;
+    ivf->parallel_mode = 1;
 
     if (!onCPU) {
       ngpus = faiss::gpu::getNumDevices();

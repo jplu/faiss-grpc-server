@@ -9,3 +9,5 @@ go/
 
 # VS Code
 .vscode/
+
+prometheus-cpp/

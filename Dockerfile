@@ -37,6 +37,12 @@ RUN git clone --recurse-submodules -b v1.7.1 https://github.com/facebookresearch
     && make -C build -j faiss \
     && make -C build install
 
+RUN git clone -b v1.14 https://github.com/civetweb/civetweb \
+    && cd /civetweb \
+    && make build lib slib \
+    && make install install-headers install-lib install-slib
+
+
 ENV CPATH="/usr/local/cuda-11.3/targets/x86_64-linux/include:${CPATH}"
 
 RUN git clone https://github.com/jplu/faiss-grpc-server.git \
@@ -62,6 +68,10 @@ COPY --from=builder /usr/lib/libupb* /usr/lib/
 COPY --from=builder /usr/lib/libaddress_sorting* /usr/lib/
 
 COPY --from=builder /usr/lib/libabsl* /usr/lib/
+
+COPY --from=builder /usr/local/lib/libcivetweb* /usr/lib/
+
+COPY --from=builder /usr/local/bin/civetweb /usr/bin/
 
 COPY --from=builder /usr/lib/x86_64-linux-gnu/libproto* /usr/lib/x86_64-linux-gnu/
 

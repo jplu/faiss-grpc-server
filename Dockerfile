@@ -48,7 +48,6 @@ RUN git clone -b v1.13 https://github.com/civetweb/civetweb \
     && sed -i "s+/../../../+/../../../../+g" /usr/lib/x86_64-linux-gnu/cmake/civetweb/civetweb-config.cmake \
     && sed -i '0,/_IMPORT_PREFIX/!b;//a \get_filename_component(_IMPORT_PREFIX "\${_IMPORT_PREFIX}" PATH)' /usr/lib/x86_64-linux-gnu/cmake/civetweb/civetweb-targets.cmake
 
-
 ENV CPATH="/usr/local/cuda-11.3/targets/x86_64-linux/include:${CPATH}"
 
 RUN git clone https://github.com/jplu/faiss-grpc-server.git \

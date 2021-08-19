@@ -37,10 +37,16 @@ RUN git clone --recurse-submodules -b v1.7.1 https://github.com/facebookresearch
     && make -C build -j faiss \
     && make -C build install
 
-RUN git clone -b v1.14 https://github.com/civetweb/civetweb \
+RUN git clone -b v1.13 https://github.com/civetweb/civetweb \
     && cd /civetweb \
-    && make build lib slib \
-    && make install install-headers install-lib install-slib
+    && mkdir -p output/build \
+    && cd output/build \
+    && cmake -G "Unix Makefiles" -DCIVETWEB_ENABLE_CXX=ON -DCIVETWEB_BUILD_TESTING=OFF -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS:BOOL=YES ../.. \
+    && make all \
+    && sed -i "s+{CMAKE_INSTALL_PREFIX}/lib+{CMAKE_INSTALL_PREFIX}/lib/x86_64-linux-gnu+g" cmake_install.cmake \
+    && cmake -DCMAKE_INSTALL_PREFIX="/usr" -P "./cmake_install.cmake" \
+    && sed -i "s+/../../../+/../../../../+g" /usr/lib/x86_64-linux-gnu/cmake/civetweb/civetweb-config.cmake \
+    && sed -i '0,/_IMPORT_PREFIX/!b;//a \get_filename_component(_IMPORT_PREFIX "\${_IMPORT_PREFIX}" PATH)' /usr/lib/x86_64-linux-gnu/cmake/civetweb/civetweb-targets.cmake
 
 
 ENV CPATH="/usr/local/cuda-11.3/targets/x86_64-linux/include:${CPATH}"
@@ -48,6 +54,8 @@ ENV CPATH="/usr/local/cuda-11.3/targets/x86_64-linux/include:${CPATH}"
 RUN git clone https://github.com/jplu/faiss-grpc-server.git \
     && cd /faiss-grpc-server \
     && make cppclient \
+    && mkdir /usr/lib/x86_64-linux-gnu/cmake/grpc \
+    && cp grpc-config.cmake /usr/lib/x86_64-linux-gnu/cmake/grpc \
     && mkdir build \
     && cd build \
     && cmake .. \
@@ -69,9 +77,9 @@ COPY --from=builder /usr/lib/libaddress_sorting* /usr/lib/
 
 COPY --from=builder /usr/lib/libabsl* /usr/lib/
 
-COPY --from=builder /usr/local/lib/libcivetweb* /usr/lib/
+COPY --from=builder /usr/lib/libcivetweb* /usr/lib/
 
-COPY --from=builder /usr/local/bin/civetweb /usr/bin/
+COPY --from=builder /usr/bin/civetweb /usr/bin/
 
 COPY --from=builder /usr/lib/x86_64-linux-gnu/libproto* /usr/lib/x86_64-linux-gnu/
 
